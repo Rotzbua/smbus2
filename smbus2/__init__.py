@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .smbus2 import SMBus, i2c_msg, I2cFunc  # noqa: F401
+from .smbus2 import I2cFunc, SMBus, i2c_msg
 
 __version__ = "0.6.0"
-__all__ = ["SMBus", "i2c_msg", "I2cFunc"]
+__all__ = ["I2cFunc", "SMBus", "i2c_msg"]

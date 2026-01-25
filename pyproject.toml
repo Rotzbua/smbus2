@@ -1,0 +1,129 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smbus2"
+dynamic = ["version"]
+description = "smbus2 is a drop-in replacement for smbus-cffi/smbus-python in pure Python."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+authors = [{ name = "Karl-Petter Lindegaard", email = "kp.lindegaard@gmail.com" }]
+keywords = ["smbus", "smbus2", "python", "i2c", "raspberrypi", "linux"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
+]
+[project.optional-dependencies]
+dev = ["pre-commit"]
+"doc" = ["sphinx >= 1.5.3"]
+"test" = ["flake8", "pytest"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["smbus2*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "smbus2.__version__" }
+
+[tool.setuptools.package-data]
+smbus2 = ["py.typed", "smbus2.pyi"]
+
+[tool.distutils.bdist_wheel]
+universal = 1
+
+[tool.flake8]
+ignore = ["E121", "E122", "E124", "E125", "E127", "E128", "E241", "E402", "E501", "E731", "E722"]
+exclude = [
+    ".ropeproject",
+    ".tox",
+    ".eggs",
+    ".git",
+    "__pycache__",
+    "doc",
+    "build",
+    "dist",
+]
+
+[tool.pycodestyle]
+max-line-length = 100
+
+[tool.ruff]
+exclude = ["scripts/**/*"]
+lint.select = [
+    "A", # flake8-builtins
+    "ANN", # flake8-annotations
+    "ARG", # flake8-unused-arguments
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "C90", #mccabe
+    "DTZ", # flake8-datetimez
+    # "D", # pydocstyle
+    "E", # pycodestyle errors
+    "F", # Pyflakes
+    "FA", # flake8-future-annotations
+    "FLY", # flynt
+    "FURB", # refurb
+    "I", # isort
+    "ISC", # flake8-implicit-str-concat
+    "LOG", # flake8-logging
+    "N", # pep8-naming
+    "PERF", # Perflint
+    "PGH", # pygrep-hooks
+    "PIE", # flake8-pie
+    "PLC", # pylint
+    "PLE", # pylint
+    # "PLR", # pylint
+    # "PLW", # pylint
+    "PT", # flake8-pytest-style
+    "PTH", # flake8-use-pathlib
+    "PYI", # flake8-pyi
+    "Q", # flake8-quotes
+    "RET", # flake8-return
+    "RET503", # ToDo Missing explicit `return` at the end of function able to return non-`None` value
+    "RSE", # flake8-raise
+    "RUF", # Ruff-specific rules
+    "S", # flake8-bandit
+    "SIM", # flake8-simplify
+    "SLF", # flake8-self
+    "SLOT", # flake8-slots
+    "T10", # flake8-debugger
+    "TC", # flake8-type-checking
+    "UP", # pyupgrade
+    "W", # pycodestyle warnings
+    "YTT", # flake8-2020
+]
+lint.ignore = [
+    "PT009",
+    "E501",
+    "RET504", # allow unnecessary assignment to `s` before `return` statement
+    "N801", # allow C naming style
+    "SIM108", # Use ternary operator
+    "RUF012", #RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+    "SIM113", # TODO
+    "PYI034", # TODO
+    "C416", # TODO
+    "A001", # TODO
+    "ANN", # TODO
+    "PT027", # TODO
+    "UP031", # TODO
+]
+[tool.ruff.lint.extend-per-file-ignores]
+"smbus2/**/*.pyi" = [
+    "UP",
+]
+"tests/**/*.py" = [
+    "S101",
+    "SLF001",
+]

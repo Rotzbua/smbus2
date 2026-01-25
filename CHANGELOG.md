@@ -78,7 +78,7 @@ with SMBus(1) as bus:
 
 ## [0.2.3] - 2019-01-10
 ### Fixed
-- Incorrect `i2c_msg` created in Python 3.x if str input contains ascii chars >= 128. 
+- Incorrect `i2c_msg` created in Python 3.x if str input contains ascii chars >= 128.
 
 ## [0.2.2] - 2019-01-03
 ### Added

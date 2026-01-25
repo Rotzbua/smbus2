@@ -19,16 +19,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import sys
 import unittest
+from unittest import mock
 
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock  # noqa: F401
-
-from smbus2 import SMBus, i2c_msg, I2cFunc
-
+from smbus2 import I2cFunc, SMBus, i2c_msg
 
 ##########################################################################
 # Mock open, close and ioctl so we can run our unit tests anywhere.
@@ -54,10 +48,7 @@ test_buffer = [x for x in range(256)]
 
 def bytes_six(lst):
     """convert a list of int to `bytes` like object"""
-    if sys.version_info.major >= 3:
-        return bytes(lst)
-    else:
-        return ''.join(map(chr, lst))
+    return bytes(lst)
 
 
 def mock_open(*args):
@@ -99,13 +90,13 @@ def mock_ioctl(fd, command, msg):
     if command == I2C_SMBUS and \
             msg.read_write == I2C_SMBUS_WRITE and \
             msg.size == I2C_SMBUS_QUICK:
-        raise IOError("Mocking SMBus Quick failed")
+        raise OSError("Mocking SMBus Quick failed")
 
 
 # Override open, close and ioctl with our mock functions
-open_mock = mock.patch('smbus2.smbus2.os.open', mock_open)
-close_mock = mock.patch('smbus2.smbus2.os.close', mock_close)
-ioctl_mock = mock.patch('smbus2.smbus2.ioctl', mock_ioctl)
+open_mock = mock.patch("smbus2.smbus2.os.open", mock_open)
+close_mock = mock.patch("smbus2.smbus2.os.close", mock_close)
+ioctl_mock = mock.patch("smbus2.smbus2.ioctl", mock_ioctl)
 ##########################################################################
 
 # Common error messages
@@ -132,7 +123,7 @@ class TestSMBus(SMBusTestCase):
         bus.close()
 
     def test_enter_exit(self):
-        for id in (1, '/dev/i2c-alias'):
+        for id in (1, "/dev/i2c-alias"):
             with SMBus(id) as bus:
                 self.assertIsNotNone(bus.fd)
             self.assertIsNone(bus.fd, None)
@@ -144,7 +135,7 @@ class TestSMBus(SMBusTestCase):
         self.assertIsNone(bus.fd)
 
     def test_open_close(self):
-        for id in (1, '/dev/i2c-alias'):
+        for id in (1, "/dev/i2c-alias"):
             bus = SMBus()
             self.assertIsNone(bus.fd)
             bus.open(id)
@@ -253,8 +244,8 @@ class TestI2CMsg(SMBusTestCase):
         for value in msg:
             k += 1
             s += value
-        self.assertEqual(k, 10, msg='Incorrect length')
-        self.assertEqual(s, 55, msg='Incorrect sum')
+        self.assertEqual(k, 10, msg="Incorrect length")
+        self.assertEqual(s, 55, msg="Incorrect sum")
 
         # 3: Through i2c_msg properties
         k = 0
@@ -262,5 +253,5 @@ class TestI2CMsg(SMBusTestCase):
         for k in range(msg.len):
             s += ord(msg.buf[k])
             k += 1
-        self.assertEqual(k, 10, msg='Incorrect length')
-        self.assertEqual(s, 55, msg='Incorrect sum')
+        self.assertEqual(k, 10, msg="Incorrect length")
+        self.assertEqual(s, 55, msg="Incorrect sum")

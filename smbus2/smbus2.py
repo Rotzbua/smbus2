@@ -21,10 +21,20 @@
 # SOFTWARE.
 
 import os
-import sys
+from ctypes import (
+    POINTER,
+    Array,
+    Structure,
+    Union,
+    c_char,
+    c_uint8,
+    c_uint16,
+    c_uint32,
+    c_ulong,
+    create_string_buffer,
+    string_at,
+)
 from fcntl import ioctl
-from ctypes import c_uint32, c_uint8, c_uint16, c_ulong, c_char, POINTER, Structure, Array, Union, create_string_buffer, string_at
-
 
 # Commands from uapi/linux/i2c-dev.h
 I2C_SLAVE = 0x0703  # Use this slave address
@@ -133,10 +143,10 @@ class i2c_smbus_ioctl_data(Structure):
     As defined in ``i2c-dev.h``.
     """
     _fields_ = [
-        ('read_write', c_uint8),
-        ('command', c_uint8),
-        ('size', c_uint32),
-        ('data', union_pointer_type)]
+        ("read_write", c_uint8),
+        ("command", c_uint8),
+        ("size", c_uint32),
+        ("data", union_pointer_type)]
     __slots__ = [name for name, type in _fields_]
 
     @staticmethod
@@ -159,10 +169,10 @@ class i2c_msg(Structure):
     As defined in ``i2c.h``.
     """
     _fields_ = [
-        ('addr', c_uint16),
-        ('flags', c_uint16),
-        ('len', c_uint16),
-        ('buf', POINTER(c_char))]
+        ("addr", c_uint16),
+        ("flags", c_uint16),
+        ("len", c_uint16),
+        ("buf", POINTER(c_char))]
 
     def __iter__(self):
         """ Iterator / Generator
@@ -182,7 +192,7 @@ class i2c_msg(Structure):
         return string_at(self.buf, self.len)
 
     def __repr__(self):
-        return 'i2c_msg(%d,%d,%r)' % (self.addr, self.flags, self.__bytes__())
+        return "i2c_msg(%d,%d,%r)" % (self.addr, self.flags, self.__bytes__())
 
     def __str__(self):
         s = self.__bytes__()
@@ -219,14 +229,11 @@ class i2c_msg(Structure):
         :return: New :py:class:`i2c_msg` instance for write operation.
         :rtype: :py:class:`i2c_msg`
         """
-        if sys.version_info.major >= 3:
-            if type(buf) is str:
-                buf = bytes(map(ord, buf))
-            else:
-                buf = bytes(buf)
+        if type(buf) is str:
+            buf = bytes(map(ord, buf))
         else:
-            if type(buf) is not str:
-                buf = ''.join([chr(x) for x in buf])
+            buf = bytes(buf)
+
         arr = create_string_buffer(buf, len(buf))
         return i2c_msg(
             addr=address, flags=0, len=len(arr),
@@ -238,8 +245,8 @@ class i2c_rdwr_ioctl_data(Structure):
     As defined in ``i2c-dev.h``.
     """
     _fields_ = [
-        ('msgs', POINTER(i2c_msg)),
-        ('nmsgs', c_uint32)
+        ("msgs", POINTER(i2c_msg)),
+        ("nmsgs", c_uint32)
     ]
     __slots__ = [name for name, type in _fields_]
 
@@ -263,7 +270,7 @@ class i2c_rdwr_ioctl_data(Structure):
 #############################################################
 
 
-class SMBus(object):
+class SMBus:
     """
     Main class for I2C and SMBus communication, providing all IO functions for device access.
     """
@@ -306,11 +313,11 @@ class SMBus(object):
         :raise TypeError: if type(bus) is not in (int, str)
         """
         if isinstance(bus, int):
-            filepath = "/dev/i2c-{}".format(bus)
+            filepath = f"/dev/i2c-{bus}"
         elif isinstance(bus, str):
             filepath = bus
         else:
-            raise TypeError("Unexpected type(bus)={}".format(type(bus)))
+            raise TypeError(f"Unexpected type(bus)={type(bus)}")
 
         self.fd = os.open(filepath, os.O_RDWR)
         self.funcs = self._get_funcs()
@@ -337,7 +344,7 @@ class SMBus(object):
         :type enable: bool
         """
         if not (self.funcs & I2cFunc.SMBUS_PEC):
-            raise IOError('SMBUS_PEC is not a feature')
+            raise OSError("SMBUS_PEC is not a feature")
         self._pec = int(enable)
         ioctl(self.fd, I2C_PEC, self._pec)
 

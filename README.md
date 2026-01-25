@@ -196,8 +196,8 @@ From [conda-forge](https://anaconda.org/conda-forge) using `conda`:
 ```
 conda install -c conda-forge smbus2
 ```
-
 Installation from source code is straight forward:
+
 
 ```
 python setup.py install

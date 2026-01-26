@@ -27,8 +27,8 @@ classifiers = [
 ]
 [project.optional-dependencies]
 dev = ["pre-commit"]
-"doc" = ["sphinx >= 1.5.3"]
-"test" = ["flake8", "pytest"]
+"doc" = ["sphinx>=7","sphinx-rtd-theme"]
+"test" = ["flake8", "pytest","mypy"]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -127,3 +127,15 @@ lint.ignore = [
     "S101",
     "SLF001",
 ]
+#[tool.mypy]
+#python_version = "3.12"
+#files = ["src", "stubs"]
+#strict = true
+#warn_unused_ignores = true
+#warn_return_any = true
+[tool.mypy]
+# ... your other settings
+
+[[tool.mypy.overrides]]
+module = "smbus2.*"
+ignore_missing_imports = true  # Or disallow_any_generics = false

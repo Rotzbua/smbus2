@@ -41,13 +41,7 @@ repos:
     hooks:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place, --ignore-pass-statements, ]
-#
-#  - repo: https://github.com/pre-commit/mirrors-mypy
-#    rev: v1.19.1
-#    hooks:
-#      - id: mypy
-#        files: '^CubeRaspberryLib3/.*\.py$'
-#
+
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
@@ -61,3 +55,9 @@ repos:
       - id: ruff-check
         args: [ --fix ]
 #      - id: ruff-format
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        args: [--ignore-missing-imports,  --namespace-packages ]  # Optional: customize as needed
+        files: ^smbus2/.*\.py$

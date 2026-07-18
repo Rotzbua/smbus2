@@ -28,7 +28,7 @@ classifiers = [
 [project.optional-dependencies]
 dev = ["pre-commit"]
 "doc" = ["sphinx>=7","sphinx-rtd-theme"]
-"test" = ["flake8", "pytest","mypy"]
+"test" = ["flake8", "pytest","mypy","types-fcntl"]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -38,7 +38,7 @@ include = ["smbus2*"]
 version = { attr = "smbus2.__version__" }
 
 [tool.setuptools.package-data]
-smbus2 = ["py.typed", "smbus2.pyi"]
+smbus2 = ["py.typed"]
 
 [tool.distutils.bdist_wheel]
 universal = 1
@@ -80,7 +80,7 @@ lint.select = [
     "LOG", # flake8-logging
     "N", # pep8-naming
     "PERF", # Perflint
-    "PGH", # pygrep-hooks
+    "PGH", # spygrep-hooks
     "PIE", # flake8-pie
     "PLC", # pylint
     "PLE", # pylint

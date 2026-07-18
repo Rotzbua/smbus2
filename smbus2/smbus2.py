@@ -36,39 +36,35 @@ from ctypes import (
     pointer,
     string_at,
 )
+from enum import IntFlag
 from fcntl import ioctl
-from types import TracebackType
-from typing import Iterable, Sequence, SupportsBytes
+from typing import TYPE_CHECKING, Iterable, Sequence, SupportsBytes
+
+if TYPE_CHECKING:
+    from types import TracebackType
 
 # Commands from uapi/linux/i2c-dev.h
-I2C_SLAVE = 0x0703  # Use this slave address
-I2C_SLAVE_FORCE = 0x0706  # Use this slave address, even if it is already in use by a driver!
-I2C_FUNCS = 0x0705  # Get the adapter functionality mask
-I2C_RDWR = 0x0707  # Combined R/W transfer (one STOP only)
-I2C_SMBUS = 0x0720  # SMBus transfer. Takes pointer to i2c_smbus_ioctl_data
-I2C_PEC = 0x0708  # != 0 to use PEC with SMBus
+I2C_SLAVE: int = 0x0703  # Use this slave address
+I2C_SLAVE_FORCE: int = 0x0706  # Use this slave address, even if it is already in use by a driver!
+I2C_FUNCS: int = 0x0705  # Get the adapter functionality mask
+I2C_RDWR: int = 0x0707  # Combined R/W transfer (one STOP only)
+I2C_SMBUS: int = 0x0720  # SMBus transfer. Takes pointer to i2c_smbus_ioctl_data
+I2C_PEC: int = 0x0708  # != 0 to use PEC with SMBus
 
 # SMBus transfer read or write markers from uapi/linux/i2c.h
-I2C_SMBUS_WRITE = 0
-I2C_SMBUS_READ = 1
+I2C_SMBUS_WRITE: int = 0
+I2C_SMBUS_READ: int = 1
 
 # Size identifiers uapi/linux/i2c.h
-I2C_SMBUS_QUICK = 0
-I2C_SMBUS_BYTE = 1
-I2C_SMBUS_BYTE_DATA = 2
-I2C_SMBUS_WORD_DATA = 3
-I2C_SMBUS_PROC_CALL = 4
-I2C_SMBUS_BLOCK_DATA = 5  # This isn't supported by Pure-I2C drivers with SMBUS emulation, like those in RaspberryPi, OrangePi, etc :(
-I2C_SMBUS_BLOCK_PROC_CALL = 7  # Like I2C_SMBUS_BLOCK_DATA, it isn't supported by Pure-I2C drivers either.
-I2C_SMBUS_I2C_BLOCK_DATA = 8
-I2C_SMBUS_BLOCK_MAX = 32
-
-# To determine what functionality is present (uapi/linux/i2c.h)
-try:
-    from enum import IntFlag
-except ImportError:
-    IntFlag = int
-
+I2C_SMBUS_QUICK: int = 0
+I2C_SMBUS_BYTE: int = 1
+I2C_SMBUS_BYTE_DATA: int = 2
+I2C_SMBUS_WORD_DATA: int = 3
+I2C_SMBUS_PROC_CALL: int = 4
+I2C_SMBUS_BLOCK_DATA: int = 5  # This isn't supported by Pure-I2C drivers with SMBUS emulation, like those in RaspberryPi, OrangePi, etc :(
+I2C_SMBUS_BLOCK_PROC_CALL: int = 7  # Like I2C_SMBUS_BLOCK_DATA, it isn't supported by Pure-I2C drivers either.
+I2C_SMBUS_I2C_BLOCK_DATA: int = 8
+I2C_SMBUS_BLOCK_MAX: int = 32
 
 class I2cFunc(IntFlag):
     """
@@ -76,8 +72,7 @@ class I2cFunc(IntFlag):
 
     You can test these flags on your `smbus.funcs`
 
-    On newer python versions, I2cFunc is an IntFlag enum, but it
-    falls back to class with a bunch of int constants on older releases.
+    I2cFunc is an IntFlag enum.
     """
     I2C = 0x00000001
     ADDR_10BIT = 0x00000002
@@ -109,7 +104,7 @@ class I2cFunc(IntFlag):
 
 
 # i2c_msg flags from uapi/linux/i2c.h
-I2C_M_RD = 0x0001
+I2C_M_RD: int = 0x0001
 
 # Pointer definitions
 LP_c_uint8 = POINTER(c_uint8)
@@ -157,8 +152,11 @@ class i2c_smbus_ioctl_data(Structure):
     def create(read_write: int = I2C_SMBUS_READ, command: int = 0, size: int = I2C_SMBUS_BYTE_DATA) -> i2c_smbus_ioctl_data:
         u = union_i2c_smbus_data()
         return i2c_smbus_ioctl_data(
-            read_write=read_write, command=command, size=size,
-            data=union_pointer_type(u))
+            read_write=read_write,
+            command=command,
+            size=size,
+            data=union_pointer_type(u)
+        )
 
 
 #############################################################
@@ -201,8 +199,7 @@ class i2c_msg(Structure):
     def __str__(self) -> str:
         s = self.__bytes__()
         # Throw away non-decodable bytes
-        s = s.decode(errors="ignore")
-        return s
+        return s.decode(errors="ignore")
 
     @staticmethod
     def read(address: int, length: int) -> i2c_msg:

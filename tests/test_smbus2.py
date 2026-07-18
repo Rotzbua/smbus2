@@ -25,7 +25,8 @@ import unittest
 try:
     import unittest.mock as mock
 except ImportError:
-    import mock  # noqa: F401
+
+    from unittest import mock
 
 from smbus2 import SMBus, i2c_msg, I2cFunc
 
@@ -54,10 +55,7 @@ test_buffer = [x for x in range(256)]
 
 def bytes_six(lst):
     """convert a list of int to `bytes` like object"""
-    if sys.version_info.major >= 3:
-        return bytes(lst)
-    else:
-        return ''.join(map(chr, lst))
+    return bytes(lst)
 
 
 def mock_open(*args):
@@ -99,7 +97,7 @@ def mock_ioctl(fd, command, msg):
     if command == I2C_SMBUS and \
             msg.read_write == I2C_SMBUS_WRITE and \
             msg.size == I2C_SMBUS_QUICK:
-        raise IOError("Mocking SMBus Quick failed")
+        raise OSError("Mocking SMBus Quick failed")
 
 
 # Override open, close and ioctl with our mock functions

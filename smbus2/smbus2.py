@@ -263,7 +263,7 @@ class i2c_rdwr_ioctl_data(Structure):
 #############################################################
 
 
-class SMBus(object):
+class SMBus:
     """
     Main class for I2C and SMBus communication, providing all IO functions for device access.
     """
@@ -337,7 +337,7 @@ class SMBus(object):
         :type enable: bool
         """
         if not (self.funcs & I2cFunc.SMBUS_PEC):
-            raise IOError('SMBUS_PEC is not a feature')
+            raise OSError('SMBUS_PEC is not a feature')
         self._pec = int(enable)
         ioctl(self.fd, I2C_PEC, self._pec)
 

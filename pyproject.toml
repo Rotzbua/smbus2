@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smbus2"
+dynamic = ["version"]
+description = "smbus2 is a drop-in replacement for smbus-cffi/smbus-python in pure Python."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+authors = [{ name = "Karl-Petter Lindegaard", email = "kp.lindegaard@gmail.com" }]
+keywords = ["smbus", "smbus2", "python", "i2c", "raspberrypi", "linux"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Topic :: Utilities",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
+]
+[dependency-groups]
+"docs" = [
+    "sphinx>=7",
+    "sphinx-rtd-theme",
+    "myst-parser",
+]
+"qa" = ["flake8"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["smbus2*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "smbus2.__version__" }
+
+[tool.setuptools.package-data]
+smbus2 = ["py.typed", "smbus2.pyi"]
+
+[tool.distutils.bdist_wheel]
+universal = 1
+
+[tool.flake8]
+ignore = ["E121", "E122", "E124", "E125", "E127", "E128", "E241", "E402", "E501", "E731", "E722"]
+exclude = [
+    ".ropeproject",
+    ".tox",
+    ".eggs",
+    ".git",
+    "__pycache__",
+    "doc",
+    "build",
+    "dist"
+]
+
+[tool.pycodestyle]
+max-line-length = 100
